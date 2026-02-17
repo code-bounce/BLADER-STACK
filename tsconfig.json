@@ -32,7 +32,8 @@
 
     "baseUrl": ".",
     "paths": {
-      "@repo/database": ["./packages/database/src"]
+      "@repo/database": ["./packages/database/src"],
+      "@repo/ui": ["./packages/ui/src"]
     }
   },
   "exclude": ["node_modules", "dist", "build", ".next", ".expo", "drizzle"]
