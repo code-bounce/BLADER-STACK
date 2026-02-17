@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+
+    // Override to emit declaration files
+    "noEmit": false,
+    "emitDeclarationOnly": true, // ✅ Only emit .d.ts files
+
+    // Remove allowImportingTsExtensions for packages that emit
+    "allowImportingTsExtensions": false,
+
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "drizzle"]
+}

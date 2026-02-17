@@ -1,0 +1,18 @@
+{
+  "name": "blader-stack",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"bun run dev:server\"",
+    "dev:server": "bun --watch apps/server/src/index.ts",
+    "build:server": "cd apps/server && bun build --compile --target bun --outfile server src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "concurrently": "^9.2.1",
+    "typescript": "^5"
+  }
+}
