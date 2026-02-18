@@ -28,7 +28,6 @@ This command will automatically:
 - Add `import "@blader/ui/globals.css";` to your `main.tsx`
 - Add `TooltipProvider` wrapper to your app (Vite or Next.js)
 - Add `Toaster` component to your app (Vite or Next.js)
-- Add `Toaster` component to your app (Vite or Next.js)
 
 Then install dependencies:
 

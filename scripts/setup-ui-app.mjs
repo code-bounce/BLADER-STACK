@@ -43,6 +43,12 @@ if (fs.existsSync(postcssSourcePath)) {
 const packageJsonPath = path.join(appDir, "package.json");
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
 
+if (!packageJson.dependencies) {
+  packageJson.dependencies = {};
+}
+
+packageJson.dependencies["@blader/ui"] = "workspace:*";
+
 if (!packageJson.devDependencies) {
   packageJson.devDependencies = {};
 }
@@ -50,6 +56,7 @@ if (!packageJson.devDependencies) {
 packageJson.devDependencies["@tailwindcss/postcss"] = "^4.1.18";
 
 fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + "\n");
+console.log(`✓ Added @blader/ui to ${appName} dependencies`);
 console.log(`✓ Added @tailwindcss/postcss to ${appName} devDependencies`);
 
 // Update main.tsx to include globals.css import and TooltipProvider (Vite app)
