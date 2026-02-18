@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { execSync } from "child_process";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, "..");
@@ -59,13 +60,75 @@ fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + "\n");
 console.log(`✓ Added @blader/ui to ${appName} dependencies`);
 console.log(`✓ Added @tailwindcss/postcss to ${appName} devDependencies`);
 
+// Update vite.config.ts to add tailwindcss plugin (Vite app)
+const viteConfigPath = path.join(appDir, "vite.config.ts");
+if (fs.existsSync(viteConfigPath)) {
+  let viteContent = fs.readFileSync(viteConfigPath, "utf-8");
+
+  if (!viteContent.includes("tailwindcss")) {
+    // Add tailwindcss import
+    if (!viteContent.includes(`import tailwindcss`)) {
+      const firstImport = viteContent.match(/^import\s/m);
+      if (firstImport) {
+        viteContent = viteContent.replace(
+          firstImport[0],
+          `import tailwindcss from '@tailwindcss/vite'\n${firstImport[0]}`,
+        );
+      }
+    }
+
+    // Add tailwindcss to plugins array
+    viteContent = viteContent.replace(
+      /plugins:\s*\[([^\]]*)\]/,
+      (match, content) => {
+        if (!content.includes("tailwindcss")) {
+          return `plugins: [\n    tailwindcss(),\n    ${content.trim()}\n  ]`;
+        }
+        return match;
+      },
+    );
+
+    fs.writeFileSync(viteConfigPath, viteContent);
+    console.log(`✓ Added tailwindcss plugin to vite.config.ts`);
+  }
+}
+
+// Add @import "tailwindcss"; to index.css or globals.css (Vite app)
+const indexCssPath = path.join(appDir, "src", "index.css");
+const globalsCssPath = path.join(appDir, "src", "globals.css");
+const targetCssPath = fs.existsSync(indexCssPath)
+  ? indexCssPath
+  : globalsCssPath;
+
+if (fs.existsSync(targetCssPath)) {
+  let cssContent = fs.readFileSync(targetCssPath, "utf-8");
+
+  if (!cssContent.includes('@import "tailwindcss";')) {
+    cssContent = `@import "tailwindcss";\n\n${cssContent}`;
+    fs.writeFileSync(targetCssPath, cssContent);
+    console.log(`✓ Added @import "tailwindcss"; to CSS file`);
+  }
+}
+
+// Add @import "tailwindcss"; to app/globals.css (Next.js app)
+const nextGlobalsCssPath = path.join(appDir, "src", "app", "globals.css");
+if (fs.existsSync(nextGlobalsCssPath)) {
+  let nextCssContent = fs.readFileSync(nextGlobalsCssPath, "utf-8");
+
+  if (!nextCssContent.includes('@import "tailwindcss";')) {
+    nextCssContent = `@import "tailwindcss";\n\n${nextCssContent}`;
+    fs.writeFileSync(nextGlobalsCssPath, nextCssContent);
+    console.log(`✓ Added @import "tailwindcss"; to app/globals.css`);
+  }
+}
+
 // Update main.tsx to include globals.css import and TooltipProvider (Vite app)
 const mainTsxPath = path.join(appDir, "src", "main.tsx");
 if (fs.existsSync(mainTsxPath)) {
   let mainContent = fs.readFileSync(mainTsxPath, "utf-8");
   const globalsImport = 'import "@blader/ui/globals.css";';
   const tooltipImport =
-    'import { TooltipProvider } from "@blader/ui/components/tooltip";';
+    'import { TooltipProvider } from "@blader/ui/components/ui/tooltip";';
 
   let updated = false;
 
@@ -125,7 +188,7 @@ const mainTsxPathToaster = path.join(appDir, "src", "main.tsx");
 if (fs.existsSync(mainTsxPathToaster)) {
   let mainContentToaster = fs.readFileSync(mainTsxPathToaster, "utf-8");
   const toasterImport =
-    'import { Toaster } from "@blader/ui/components/sonner";';
+    'import { Toaster } from "@blader/ui/components/ui/sonner";';
 
   let updated = false;
 
@@ -166,9 +229,9 @@ const layoutTsxPath = path.join(appDir, "src", "app", "layout.tsx");
 if (fs.existsSync(layoutTsxPath)) {
   let layoutContent = fs.readFileSync(layoutTsxPath, "utf-8");
   const tooltipImport =
-    'import { TooltipProvider } from "@blader/ui/components/tooltip";';
+    'import { TooltipProvider } from "@blader/ui/components/ui/tooltip";';
   const toasterImport =
-    'import { Toaster } from "@blader/ui/components/sonner";';
+    'import { Toaster } from "@blader/ui/components/ui/sonner";';
 
   let updated = false;
 
@@ -222,6 +285,17 @@ if (fs.existsSync(layoutTsxPath)) {
   }
 }
 
+// Install tailwindcss and @tailwindcss/vite
+try {
+  console.log(`\n📦 Installing tailwindcss and @tailwindcss/vite...`);
+  execSync(`cd ${appDir} && bun add tailwindcss @tailwindcss/vite`, {
+    stdio: "inherit",
+  });
+  console.log(`✓ Installed tailwindcss and @tailwindcss/vite`);
+} catch (error) {
+  console.error(`✗ Failed to install tailwindcss packages: ${error.message}`);
+}
+
 console.log(
-  `\n✅ Setup complete for ${appName}! Run 'bun install' to install dependencies.`,
+  `\n✅ Setup complete for ${appName}! Run 'bun install' to install remaining dependencies.`,
 );

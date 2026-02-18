@@ -1,9 +1,9 @@
-import { Button } from "@blader/ui/components/button";
+import { Button } from "@blader/ui/components/ui/button";
 
 function App() {
   return (
-    <div>
-      App <Button>Click me</Button>
+    <div className="bg-gray-100">
+      <Button>Click me</Button>
     </div>
   );
 }

@@ -11,10 +11,11 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@blader/ui/components",
+    "components": "@blader/ui/components/ui",
     "utils": "@blader/ui/lib/utils",
     "hooks": "@blader/ui/hooks",
     "lib": "@blader/ui/lib",
-    "ui": "@blader/ui/components"
+    "ui": "@blader/ui/components/ui",
+    "composed": "@blader/ui/components/composed"
   }
 }
