@@ -25,7 +25,10 @@ This command will automatically:
 - Copy `components.json` (shadcn/ui configuration)
 - Copy `postcss.config.mjs` (PostCSS configuration for Tailwind)
 - Add `@tailwindcss/postcss` to devDependencies
-- Add `import "@repo/ui/globals.css";` to your `main.tsx`
+- Add `import "@blader/ui/globals.css";` to your `main.tsx`
+- Add `TooltipProvider` wrapper to your app (Vite or Next.js)
+- Add `Toaster` component to your app (Vite or Next.js)
+- Add `Toaster` component to your app (Vite or Next.js)
 
 Then install dependencies:
 
@@ -44,7 +47,7 @@ In your app's `package.json`:
 ```json
 {
   "dependencies": {
-    "@repo/ui": "workspace:*"
+    "@blader/ui": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18"
@@ -64,7 +67,7 @@ Copy these files from `packages/ui/` to your app root:
 In your `src/main.tsx`:
 
 ```tsx
-import "@repo/ui/globals.css";
+import "@blader/ui/globals.css";
 import App from "./App.tsx";
 ```
 
@@ -74,12 +77,59 @@ import App from "./App.tsx";
 bun install
 ```
 
-## Using Components
+## TooltipProvider & Toaster Setup
 
-Once set up, you can import components from `@repo/ui`:
+The setup script automatically wraps your application with `TooltipProvider` (required for the tooltip component) and adds the `Toaster` component (required for toast notifications):
+
+### For Vite Apps
+
+Your `src/main.tsx` will be updated to:
 
 ```tsx
-import { Button } from "@repo/ui/components/ui/button";
+import { TooltipProvider } from "@blader/ui/components/tooltip";
+import { Toaster } from "@blader/ui/components/sonner";
+import App from "./App.tsx";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <TooltipProvider>
+      <App />
+    </TooltipProvider>
+    <Toaster />
+  </React.StrictMode>,
+);
+```
+
+### For Next.js Apps
+
+Your `src/app/layout.tsx` will be updated to:
+
+```tsx
+import { TooltipProvider } from "@blader/ui/components/tooltip";
+import { Toaster } from "@blader/ui/components/sonner";
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <TooltipProvider>{children}</TooltipProvider>
+        <Toaster />
+      </body>
+    </html>
+  );
+}
+```
+
+## Using Components
+
+Once set up, you can import components from `@blader/ui`:
+
+```tsx
+import { Button } from "@blader/ui/components/ui/button";
 
 export default function App() {
   return <Button>Click me</Button>;
