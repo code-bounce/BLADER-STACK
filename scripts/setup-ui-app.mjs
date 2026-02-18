@@ -122,18 +122,106 @@ if (fs.existsSync(nextGlobalsCssPath)) {
   }
 }
 
-// Update main.tsx to include globals.css import and TooltipProvider (Vite app)
+// Update __root.tsx if it exists (TanStack Router) or main.tsx (Vite app)
+const rootTsxPath = path.join(appDir, "src", "routes", "__root.tsx");
 const mainTsxPath = path.join(appDir, "src", "main.tsx");
-if (fs.existsSync(mainTsxPath)) {
+
+// Check for __root.tsx first (TanStack Router pattern)
+if (fs.existsSync(rootTsxPath)) {
+  let rootContent = fs.readFileSync(rootTsxPath, "utf-8");
+  const globalsImport = 'import "@blader/ui/globals.css";';
+  const tooltipImport =
+    'import { TooltipProvider } from "@blader/ui/components/ui/tooltip";';
+  const toasterImport =
+    'import { Toaster } from "@blader/ui/components/ui/sonner";';
+
+  let updated = false;
+
+  // Add globals import
+  if (!rootContent.includes(globalsImport)) {
+    const lines = rootContent.split("\n");
+    let insertIndex = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].startsWith("import ")) {
+        insertIndex = i + 1;
+      } else if (lines[i].trim() === "" && insertIndex > 0) {
+        break;
+      }
+    }
+
+    lines.splice(insertIndex, 0, globalsImport);
+    rootContent = lines.join("\n");
+    updated = true;
+    console.log(`✓ Added globals.css import to __root.tsx`);
+  }
+
+  // Add TooltipProvider import
+  if (!rootContent.includes(tooltipImport)) {
+    const lines = rootContent.split("\n");
+    let insertIndex = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].startsWith("import ")) {
+        insertIndex = i + 1;
+      } else if (lines[i].trim() === "" && insertIndex > 0) {
+        break;
+      }
+    }
+
+    lines.splice(insertIndex, 0, tooltipImport);
+    rootContent = lines.join("\n");
+    updated = true;
+    console.log(`✓ Added TooltipProvider import to __root.tsx`);
+  }
+
+  // Add Toaster import
+  if (!rootContent.includes(toasterImport)) {
+    const lines = rootContent.split("\n");
+    let insertIndex = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].startsWith("import ")) {
+        insertIndex = i + 1;
+      } else if (lines[i].trim() === "" && insertIndex > 0) {
+        break;
+      }
+    }
+
+    lines.splice(insertIndex, 0, toasterImport);
+    rootContent = lines.join("\n");
+    updated = true;
+    console.log(`✓ Added Toaster import to __root.tsx`);
+  }
+
+  // Wrap Outlet with TooltipProvider and add Toaster
+  if (!rootContent.includes("<TooltipProvider>")) {
+    rootContent = rootContent.replace(
+      /<Outlet\s*\/>/,
+      "<TooltipProvider>\n      <Outlet />\n    </TooltipProvider>\n    <Toaster />",
+    );
+    updated = true;
+    console.log(
+      `✓ Wrapped Outlet with TooltipProvider and added Toaster in __root.tsx`,
+    );
+  }
+
+  if (updated) {
+    fs.writeFileSync(rootTsxPath, rootContent);
+  }
+} else if (fs.existsSync(mainTsxPath)) {
+  // Fall back to main.tsx if __root.tsx doesn't exist
   let mainContent = fs.readFileSync(mainTsxPath, "utf-8");
   const globalsImport = 'import "@blader/ui/globals.css";';
   const tooltipImport =
     'import { TooltipProvider } from "@blader/ui/components/ui/tooltip";';
+  const toasterImport =
+    'import { Toaster } from "@blader/ui/components/ui/sonner";';
 
   let updated = false;
 
+  // Add globals import
   if (!mainContent.includes(globalsImport)) {
-    // Add the import after other imports
     const lines = mainContent.split("\n");
     let insertIndex = 0;
 
@@ -151,6 +239,7 @@ if (fs.existsSync(mainTsxPath)) {
     console.log(`✓ Added globals.css import to main.tsx`);
   }
 
+  // Add TooltipProvider import
   if (!mainContent.includes(tooltipImport)) {
     const lines = mainContent.split("\n");
     let insertIndex = 0;
@@ -169,31 +258,9 @@ if (fs.existsSync(mainTsxPath)) {
     console.log(`✓ Added TooltipProvider import to main.tsx`);
   }
 
-  if (!mainContent.includes("<TooltipProvider>")) {
-    mainContent = mainContent.replace(
-      /<App\s*\/>/,
-      "<TooltipProvider>\n      <App />\n    </TooltipProvider>",
-    );
-    updated = true;
-    console.log(`✓ Wrapped App with TooltipProvider in main.tsx`);
-  }
-
-  if (updated) {
-    fs.writeFileSync(mainTsxPath, mainContent);
-  }
-}
-
-// Update main.tsx to include Toaster (Vite app)
-const mainTsxPathToaster = path.join(appDir, "src", "main.tsx");
-if (fs.existsSync(mainTsxPathToaster)) {
-  let mainContentToaster = fs.readFileSync(mainTsxPathToaster, "utf-8");
-  const toasterImport =
-    'import { Toaster } from "@blader/ui/components/ui/sonner";';
-
-  let updated = false;
-
-  if (!mainContentToaster.includes(toasterImport)) {
-    const lines = mainContentToaster.split("\n");
+  // Add Toaster import
+  if (!mainContent.includes(toasterImport)) {
+    const lines = mainContent.split("\n");
     let insertIndex = 0;
 
     for (let i = 0; i < lines.length; i++) {
@@ -205,22 +272,43 @@ if (fs.existsSync(mainTsxPathToaster)) {
     }
 
     lines.splice(insertIndex, 0, toasterImport);
-    mainContentToaster = lines.join("\n");
+    mainContent = lines.join("\n");
     updated = true;
     console.log(`✓ Added Toaster import to main.tsx`);
   }
 
-  if (!mainContentToaster.includes("<Toaster />")) {
-    mainContentToaster = mainContentToaster.replace(
-      /<\/TooltipProvider>/,
-      "</TooltipProvider>\n      <Toaster />",
-    );
-    updated = true;
-    console.log(`✓ Added Toaster component to main.tsx`);
+  // Wrap root.render with TooltipProvider and Toaster
+  if (!mainContent.includes("<TooltipProvider>")) {
+    // Handle various render patterns
+    const renderPatterns = [
+      // Pattern 1: root.render(<App />)
+      /root\.render\(\s*<App\s*\/>\s*\)/,
+      // Pattern 2: root.render(<SomeComponent ... />)
+      /root\.render\(\s*<(\w+)[^>]*\/>\s*\)/,
+      // Pattern 3: root.render(<Component>...</Component>)
+      /root\.render\(\s*<(\w+)[^>]*>[\s\S]*?<\/\1>\s*\)/,
+    ];
+
+    for (const pattern of renderPatterns) {
+      if (pattern.test(mainContent)) {
+        mainContent = mainContent.replace(pattern, (match) => {
+          // Extract the inner content
+          const innerContent = match
+            .replace(/^root\.render\(\s*/, "")
+            .replace(/\s*\)$/, "");
+          return `root.render(\n  <TooltipProvider>\n    ${innerContent}\n    <Toaster />\n  </TooltipProvider>\n)`;
+        });
+        updated = true;
+        console.log(
+          `✓ Wrapped render with TooltipProvider and Toaster in main.tsx`,
+        );
+        break;
+      }
+    }
   }
 
   if (updated) {
-    fs.writeFileSync(mainTsxPathToaster, mainContentToaster);
+    fs.writeFileSync(mainTsxPath, mainContent);
   }
 }
 
