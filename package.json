@@ -10,7 +10,8 @@
     "dev:server": "bun --watch apps/server/src/index.ts",
     "dev:iam": "cd apps/iam && bun run dev",
     "build:server": "cd apps/server && bun build --compile --target bun --outfile server src/index.ts",
-    "sync:ui:web": "bun scripts/sync-ui-web.mjs"
+    "sync:ui:web": "bun scripts/sync-ui-web.mjs",
+    "sync:ui:mobile": "bun scripts/sync-ui-mobile.mjs"
   },
   "devDependencies": {
     "@types/bun": "latest",

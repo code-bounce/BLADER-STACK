@@ -14,7 +14,7 @@ if (!appName) {
 }
 
 const appDir = path.join(rootDir, "apps", appName);
-const uiDir = path.join(rootDir, "packages", "ui");
+const uiDir = path.join(rootDir, "packages", "ui-web");
 
 // Check if app directory exists
 if (!fs.existsSync(appDir)) {
@@ -48,7 +48,7 @@ if (!packageJson.dependencies) {
   packageJson.dependencies = {};
 }
 
-packageJson.dependencies["@blader/ui"] = "workspace:*";
+packageJson.dependencies["@blader/ui-web"] = "workspace:*";
 
 if (!packageJson.devDependencies) {
   packageJson.devDependencies = {};
@@ -57,7 +57,7 @@ if (!packageJson.devDependencies) {
 packageJson.devDependencies["@tailwindcss/postcss"] = "^4.1.18";
 
 fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + "\n");
-console.log(`✓ Added @blader/ui to ${appName} dependencies`);
+console.log(`✓ Added @blader/ui-web to ${appName} dependencies`);
 console.log(`✓ Added @tailwindcss/postcss to ${appName} devDependencies`);
 
 // Update vite.config.ts to add tailwindcss plugin (Vite app)
@@ -129,11 +129,11 @@ const mainTsxPath = path.join(appDir, "src", "main.tsx");
 // Check for __root.tsx first (TanStack Router pattern)
 if (fs.existsSync(rootTsxPath)) {
   let rootContent = fs.readFileSync(rootTsxPath, "utf-8");
-  const globalsImport = 'import "@blader/ui/globals.css";';
+  const globalsImport = 'import "@blader/ui-web/globals.css";';
   const tooltipImport =
-    'import { TooltipProvider } from "@blader/ui/components/ui/tooltip";';
+    'import { TooltipProvider } from "@blader/ui-web/components/ui/tooltip";';
   const toasterImport =
-    'import { Toaster } from "@blader/ui/components/ui/sonner";';
+    'import { Toaster } from "@blader/ui-web/components/ui/sonner";';
 
   let updated = false;
 
@@ -212,11 +212,11 @@ if (fs.existsSync(rootTsxPath)) {
 } else if (fs.existsSync(mainTsxPath)) {
   // Fall back to main.tsx if __root.tsx doesn't exist
   let mainContent = fs.readFileSync(mainTsxPath, "utf-8");
-  const globalsImport = 'import "@blader/ui/globals.css";';
+  const globalsImport = 'import "@blader/ui-web/globals.css";';
   const tooltipImport =
-    'import { TooltipProvider } from "@blader/ui/components/ui/tooltip";';
+    'import { TooltipProvider } from "@blader/ui-web/components/ui/tooltip";';
   const toasterImport =
-    'import { Toaster } from "@blader/ui/components/ui/sonner";';
+    'import { Toaster } from "@blader/ui-web/components/ui/sonner";';
 
   let updated = false;
 
@@ -334,9 +334,9 @@ const layoutTsxPath = path.join(appDir, "src", "app", "layout.tsx");
 if (fs.existsSync(layoutTsxPath)) {
   let layoutContent = fs.readFileSync(layoutTsxPath, "utf-8");
   const tooltipImport =
-    'import { TooltipProvider } from "@blader/ui/components/ui/tooltip";';
+    'import { TooltipProvider } from "@blader/ui-web/components/ui/tooltip";';
   const toasterImport =
-    'import { Toaster } from "@blader/ui/components/ui/sonner";';
+    'import { Toaster } from "@blader/ui-web/components/ui/sonner";';
 
   let updated = false;
 
