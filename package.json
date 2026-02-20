@@ -6,11 +6,11 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "concurrently \"bun run dev:server\" \"bun run dev:admin\"",
+    "dev": "concurrently \"bun run dev:server\" \"bun run dev:iam\"",
     "dev:server": "bun --watch apps/server/src/index.ts",
-    "dev:admin": "cd apps/admin && bun run dev",
+    "dev:iam": "cd apps/iam && bun run dev",
     "build:server": "cd apps/server && bun build --compile --target bun --outfile server src/index.ts",
-    "setup-ui-app": "bun scripts/setup-ui-app.mjs"
+    "sync:ui:web": "bun scripts/sync-ui-web.mjs"
   },
   "devDependencies": {
     "@types/bun": "latest",

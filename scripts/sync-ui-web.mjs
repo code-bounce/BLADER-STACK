@@ -279,30 +279,47 @@ if (fs.existsSync(rootTsxPath)) {
 
   // Wrap root.render with TooltipProvider and Toaster
   if (!mainContent.includes("<TooltipProvider>")) {
-    // Handle various render patterns
-    const renderPatterns = [
-      // Pattern 1: root.render(<App />)
-      /root\.render\(\s*<App\s*\/>\s*\)/,
-      // Pattern 2: root.render(<SomeComponent ... />)
-      /root\.render\(\s*<(\w+)[^>]*\/>\s*\)/,
-      // Pattern 3: root.render(<Component>...</Component>)
-      /root\.render\(\s*<(\w+)[^>]*>[\s\S]*?<\/\1>\s*\)/,
-    ];
+    // Check if StrictMode is being used
+    if (mainContent.includes("<StrictMode>")) {
+      // Replace StrictMode children with TooltipProvider wrapped content
+      mainContent = mainContent.replace(
+        /<StrictMode>([\s\S]*?)<\/StrictMode>/,
+        (match, content) => {
+          // Extract inner content and wrap with TooltipProvider
+          const innerContent = content.trim();
+          return `<StrictMode>\n    <TooltipProvider>\n      ${innerContent}\n      <Toaster />\n    </TooltipProvider>\n  </StrictMode>`;
+        },
+      );
+      updated = true;
+      console.log(
+        `✓ Wrapped content with TooltipProvider and Toaster in main.tsx`,
+      );
+    } else {
+      // Handle various render patterns without StrictMode
+      const renderPatterns = [
+        // Pattern 1: root.render(<App />)
+        /root\.render\(\s*<App\s*\/>\s*\)/,
+        // Pattern 2: root.render(<SomeComponent ... />)
+        /root\.render\(\s*<(\w+)[^>]*\/>\s*\)/,
+        // Pattern 3: root.render(<Component>...</Component>)
+        /root\.render\(\s*<(\w+)[^>]*>[\s\S]*?<\/\1>\s*\)/,
+      ];
 
-    for (const pattern of renderPatterns) {
-      if (pattern.test(mainContent)) {
-        mainContent = mainContent.replace(pattern, (match) => {
-          // Extract the inner content
-          const innerContent = match
-            .replace(/^root\.render\(\s*/, "")
-            .replace(/\s*\)$/, "");
-          return `root.render(\n  <TooltipProvider>\n    ${innerContent}\n    <Toaster />\n  </TooltipProvider>\n)`;
-        });
-        updated = true;
-        console.log(
-          `✓ Wrapped render with TooltipProvider and Toaster in main.tsx`,
-        );
-        break;
+      for (const pattern of renderPatterns) {
+        if (pattern.test(mainContent)) {
+          mainContent = mainContent.replace(pattern, (match) => {
+            // Extract the inner content
+            const innerContent = match
+              .replace(/^root\.render\(\s*/, "")
+              .replace(/\s*\)$/, "");
+            return `root.render(\n  <TooltipProvider>\n    ${innerContent}\n    <Toaster />\n  </TooltipProvider>\n)`;
+          });
+          updated = true;
+          console.log(
+            `✓ Wrapped render with TooltipProvider and Toaster in main.tsx`,
+          );
+          break;
+        }
       }
     }
   }
