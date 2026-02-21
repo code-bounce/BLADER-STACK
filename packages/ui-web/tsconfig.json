@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@blader/ui/*": ["./src/*"]
+      "@blader/ui-web/*": ["./src/*"]
     }
   },
   "include": ["."],

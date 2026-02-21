@@ -1,4 +1,4 @@
-import { cn } from "@blader/ui/lib/utils"
+import { cn } from "@blader/ui-web/lib/utils"
 
 function Kbd({ className, ...props }: React.ComponentProps<"kbd">) {
   return (

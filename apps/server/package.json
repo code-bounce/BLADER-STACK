@@ -8,9 +8,10 @@
     "generate:auth": "bun x @better-auth/cli generate --output ../../packages/database/src/schema/auth.schema.ts --config ./src/lib/auth.ts"
   },
   "dependencies": {
-    "@elysiajs/cors": "^1.4.1",
-    "@react-email/components": "^1.0.7",
     "@blader/database": "workspace:*",
+    "@elysiajs/cors": "^1.4.1",
+    "@elysiajs/openapi": "^1.4.14",
+    "@react-email/components": "^1.0.7",
     "better-auth": "^1.4.18",
     "dotenv": "^17.3.1",
     "dotenv-expand": "^12.0.3",
