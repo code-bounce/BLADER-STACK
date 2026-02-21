@@ -22,7 +22,14 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* Path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@blader/ui-web": ["../../packages/ui-web"],
+      "@blader/ui-web/*": ["../../packages/ui-web/src/*"]
+    }
   },
   "include": ["src"]
 }

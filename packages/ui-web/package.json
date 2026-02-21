@@ -38,10 +38,11 @@
     "typescript": "^5.9.3"
   },
   "exports": {
-    "./globals.css": "./src/styles/globals.css",
+    "./styles/globals.css": "./src/styles/globals.css",
     "./postcss.config": "./postcss.config.mjs",
     "./lib/*": "./src/lib/*.ts",
-    "./components/*": "./src/components/*.tsx",
+    "./components/ui/*": "./src/components/ui/*.tsx",
+    "./components/composed/*": "./src/components/composed/*.tsx",
     "./hooks/*": "./src/hooks/*.ts"
   }
 }
